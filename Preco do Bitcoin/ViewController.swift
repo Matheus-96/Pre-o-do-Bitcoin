@@ -23,14 +23,27 @@ class ViewController: UIViewController {
                 erro =  erro que aconteceu */
             let tarefa = URLSession.shared.dataTask(with: url) { (dados, requisicao, erro) in
                 if erro == nil {
-                    print("Sucesso ao fazer a consulta de preço.")
+                    if let dadosRetorno = dados {
+                        
+                        do {
+                            if let objetoJson = try JSONSerialization.jsonObject(with: dadosRetorno, options: [] ) as? [String:Any] {
+                                if let brl = objetoJson["BRL"] as? [String:Any] {
+                                    if let preco = brl["buy"] as? Double {
+                                        print(preco)
+                                    }
+                                }
+                            }
+                        } catch  {
+                            print("Erro ao formatar o retorno")
+                        }
+                    }
                 } else {
                     print("Erro ao fazer a consulta de preco.")
                 }
             
             }
             tarefa.resume()
-        } // fim do if
+        }
         
         
     }
